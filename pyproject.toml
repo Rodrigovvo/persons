@@ -1,0 +1,25 @@
+[tool.isort]
+profile = "black"
+known_first_party = ["persons"]
+skip = ["venv", "env"]
+skip_gitignore = true
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+skip-string-normalization = false
+exclude = '''
+/(
+    \.git
+  | \\.venv
+  | \\venv
+  | \\env
+  | \\.mypy_cache
+  | \\.pytest_cache
+  | \\.tox
+  | \\.eggs
+  | \\.idea
+  | \\.vscode
+  | \\.nox
+)/
+'''

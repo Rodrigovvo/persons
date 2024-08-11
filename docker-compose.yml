@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 33060
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: seu_nome_do_banco
+      MYSQL_USER: seu_usuario
+      MYSQL_PASSWORD: sua_senha
+      MYSQL_ROOT_PASSWORD: sua_senha_root
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
