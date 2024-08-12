@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.utils import IntegrityError
-from django.http import FileResponse, HttpResponseBadRequest, JsonResponse
+from django.http import FileResponse, JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
 from openpyxl import load_workbook
@@ -30,7 +30,10 @@ class UploadExcelView(View):
         """
         file = request.FILES.get("file")
         if not file:
-            return HttpResponseBadRequest("Arquivo ausente.")
+            return JsonResponse({"message":"Arquivo ausente."}, status=400)
+
+        if not file.content_type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            return JsonResponse({"message":"Formato de arquivo inválido."}, status=400)
 
         try:
             wb = load_workbook(file, data_only=True)
@@ -95,16 +98,13 @@ class UploadExcelView(View):
                         }
                     )
             if not processed_data:
-                return HttpResponseBadRequest("Sem dados para retorno.")
+                return JsonResponse({"message": "Sem dados para retorno."}, status=204)
             return JsonResponse(processed_data, safe=False, status=200)
-
-        except InvalidFileException:
-            return HttpResponseBadRequest(
-                "Formato inválido. Assegure que o arquivo seja da extensão .xlsx."
-            )
+        
         except Exception as e:
-            return HttpResponseBadRequest(
-                f"Erro no processamento do arquivo: {str(e)}."
+            return JsonResponse(
+                {"message": f"Erro no processamento do arquivo: {str(e)}."},
+                status=400
             )
 
 

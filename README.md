@@ -87,3 +87,72 @@ No populate é criado um usuário *superuser* para poder realizar os testes e de
 email: admin@example.com
 senha: admin
 ```
+
+
+#### Endpoints e endereços:
+
+
+##### Tela para teste dos endpoints
+Tela simples para chamada das requisições.
+```
+http://localhost:8000/planilha/
+```
+
+![imagem da tela](/images/image.png)
+
+
+##### Upload Planilha
+Este endpoint permite ao usuário fazer upload da planilha.
+
+```
+POST http://localhost:8000/upload-planilha/
+
+```
+
+Body da requisição:
+```
+file (file): The spreadsheet file to be uploaded.
+```
+
+Respostas
+A resposta para esta solicitação segue o esquema JSON abaixo:
+```JSON
+
+[
+    {
+        "nome": str,
+        "email": str,
+        "data de nascimento": "YYYY-mm-dd",
+        "ativo": bool,
+        "valor": float
+    },
+    {
+        "nome": str,
+        "email": str,
+        "data de nascimento": "YYYY-mm-dd",
+        "ativo": bool,
+        "valor": float
+    },
+]
+```
+
+Se não houver conteúdo a ser mostrado:
+```JSON
+{
+    "message": "Sem dados para retorno."
+}
+```
+
+##### Download planilha
+
+Este endpoint permite que os usuários baixem uma planilha contendo informações sobre as pessoas registradas no sistema. A planilha é gerada dinamicamente e inclui colunas como nome, e-mail, data de nascimento, status de atividade e valor associado a cada pessoa.
+```
+GET http://localhost:8000/download-planilha/
+```
+
+Body da requisição:
+Nenhum parâmetro é necessário para esta requisição. O endpoint gera a planilha com base nos dados existentes no banco de dados.
+
+Respostas
+Se a requisição for bem-sucedida, a resposta incluirá um arquivo Excel (.xlsx) para download.
+

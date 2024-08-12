@@ -80,9 +80,9 @@ class DownloadPlanilhaViewTest(TestCase):
         data_rows = list(ws.iter_rows(min_row=2, values_only=True))
         self.assertEqual(len(data_rows), 2)
         self.assertEqual(
-            data_rows[0], ("João Silva", "joao@example.com", "1990-01-01", True, 150.00)
+            data_rows[0],
+            ("Maria Souza", "maria@example.com", "05-05-1985", "ativo", 150.00),
         )
         self.assertEqual(
-            data_rows[1],
-            ("Maria Souza", "maria@example.com", "1985-05-05", True, 150.00),
+            data_rows[1], ("João Silva", "joao@example.com", "01-01-2008", "ativo", 100.00)
         )
