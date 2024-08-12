@@ -2,38 +2,38 @@
 
 ### Pré-requisitos:
 
-- Docker
-- Docker-compose
+- Docker (versão recomendada: 27.0)
+- Docker compose (versão recomendada: 2.23.*)
 
 # Trabalhando com o projeto:
 
 #### GitHub - clone do projeto 
 
 ```bash
-git clone 
+git clone https://github.com/Rodrigovvo/persons.git
+cd persons 
 ```
 
 #### Executando a aplicação pela primeira vez
 
-Crie as imagens do docker
+Antes de iniciar o projeto, construa as imagens Docker necessárias:
 
 ```bash
 sudo docker compose build
 ```
 
-Após finalizar, você poderá subir o projeto normalmente:
+Depois de construir as imagens, inicie a aplicação:
 
 ```bash
-sudo docker-compose up
+sudo docker compose up
 ```
 
-Rode a migração do Django e popule com os dados básicos:
+Rode a migração do Django e popule com os dados básicos (fixture de superusuário):
 ```bash
-sudo docker compose run --rm backend python manage.py migrate
+sudo docker compose run --rm web python manage.py migrate
 ```
 
-A aplicação atenderá pela porta:
-
+A aplicação estará disponível em:
 ```bash
 http://localhost:8000
 ```
@@ -48,20 +48,31 @@ sudo docker-compose up
 
 #### Executando comandos do framework Django:
 
-Para executar qualquer comando do Django (startapp, createsuperuser, makemigrations, populate_db, etc) deve considerar se a aplicação está *no ar* ou não.
+Você pode executar comandos do Django diretamente no container Docker. Se o serviço web estiver em execução, utilize os comandos abaixo conforme necessário:
 
-Se o service **backend** estiver *no ar* e *rodando* corretamente, basta utilizar o próprio service para executar o comando desejado.
-Exemplos:
+Criar um novo aplicativo Django:
 
 ```bash
-sudo docker compose exec backend python manage.py startapp novo_app
-sudo docker compose exec backend python manage.py makemigrations
-sudo docker compose exec backend python manage.py migrate
+sudo docker compose exec web python manage.py startapp novo_app
 ```
+Criar migrações para mudanças no banco de dados:
 
-#### Permissões ao arquivos criados utilizando o docker-compose
+```bash
+sudo docker compose exec web python manage.py makemigrations
+```
+Aplicar migrações:
 
-Ao executar comandos utilizando **docker-compose** que geram novos arquivos, é necessário alterar as configurações de permissionamento dos arquivos criados utilizando o comando linux **chown**. Na raiz do projeto execute o comando abaixo:
+```bash
+sudo docker compose exec web python manage.py migrate
+```
+Criar um superusuário:
+
+```bash
+sudo docker compose exec web python manage.py createsuperuser
+```
+#### Permissões ao arquivos criados utilizando o docker compose
+
+Ao executar comandos utilizando **docker compose** que geram novos arquivos, é necessário alterar as configurações de permissionamento dos arquivos criados utilizando o comando linux **chown**. Na raiz do projeto execute o comando abaixo:
 
 ```bash
 sudo chown -R $USER:$USER ./

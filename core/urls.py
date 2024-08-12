@@ -18,10 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from person.views import DownloadPlanilhaView, UploadExcelView
+from person.views import DownloadPlanilhaView, PlanilhaTestView, UploadExcelView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("planilha/", PlanilhaTestView.as_view(), name="planilha-template"),
     path("upload-planilha/", UploadExcelView.as_view(), name="upload-planilha"),
     path(
         "download-planilha/", DownloadPlanilhaView.as_view(), name="download-planilha"

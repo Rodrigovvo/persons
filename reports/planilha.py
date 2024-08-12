@@ -1,6 +1,8 @@
 from io import BytesIO
 
 from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
+from openpyxl.utils import get_column_letter
 
 from person.models import Pessoa
 
@@ -24,6 +26,12 @@ class Planilha:
         headers = ["Nome", "Email", "Data de Nascimento", "Ativo", "Valor"]
         ws.append(headers)
 
+        # Estilização dos headers
+        for i, _ in enumerate(headers, start=1):
+            cell = ws[f"{get_column_letter(i)}1"]
+            cell.font = Font(bold=True, size=12)
+            cell.alignment = Alignment(horizontal="center")
+
         if queryset:
             pessoas = queryset
         else:
@@ -43,6 +51,12 @@ class Planilha:
                     pessoa.valor,
                 ]
             )
+
+        # Redimensionamento das colunas
+        largura_fixa = 20
+        for i in range(1, len(headers) + 1):
+            column_letter = get_column_letter(i)
+            ws.column_dimensions[column_letter].width = largura_fixa
 
         excel_file = BytesIO()
         wb.save(excel_file)

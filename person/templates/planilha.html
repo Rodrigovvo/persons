@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Teste de Importação e Exportação de Planilha</title>
+    </head>
+    <body>
+        <h1>Teste de Importação e Exportação de Planilha</h1>
+
+        <hr>
+
+        <h2>Importar Planilha</h2>
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="file">Selecione o arquivo Excel:</label>
+            <input type="file" name="file" id="file" accept=".xlsx">
+            <button type="submit">Upload</button>
+        </form>
+
+        <div id="result"></div>
+
+        <hr>
+        
+        <h2>Exportar Planilha</h2>
+        <button>
+            <a href="{% url 'download-planilha' %}"> Baixar Planilha</a>
+        </button>
+
+        <script>
+            document.getElementById('uploadForm').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+
+                const form = event.target;
+                const formData = new FormData(form);
+
+                fetch("{% url 'upload-planilha' %}", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(response => {
+                    console.log(response);
+                    if(!response.ok) {
+                        return response.text()
+                    }
+                    return response.json()
+                })
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    if (typeof data === 'string') {
+                        resultDiv.innerHTML = `<div style="color: red;">Erro: ${data}</div>`;
+                    } else{
+                        if (data.error) {
+                            resultDiv.innerHTML = `<div style="color: red;">Erro: ${data.error}</div>`;
+                        } else {
+                            let resultHtml = `<h2>Itens Criados</h2><table border="1"><tr><th>Nome</th><th>Email</th><th>Data de Nascimento</th><th>Ativo</th><th>Valor</th></tr>`;
+                            data.forEach(item => {
+                                console.log(item);
+                                resultHtml += `
+                                    <td>${item.nome}</td>
+                                    <td>${item.email}</td>
+                                    <td>${item['data de nascimento']}</td>
+                                    <td>${item.ativo ? 'Sim' : 'Não'}</td>
+                                    <td>${item.valor}</td>
+                                </tr>`;
+                            });
+                            resultHtml += `</table>`;
+                            resultDiv.innerHTML = resultHtml;
+                        }
+                    }
+                })
+                .catch(error => {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `<div style="color: red;">Erro ao processar a planilha: ${error}</div>`;
+                });
+            });
+        </script>
+    </body>
+</html>

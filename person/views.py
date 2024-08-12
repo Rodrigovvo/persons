@@ -5,6 +5,7 @@ from django.core.validators import validate_email
 from django.db.utils import IntegrityError
 from django.http import FileResponse, HttpResponseBadRequest, JsonResponse
 from django.views import View
+from django.views.generic import TemplateView
 from openpyxl import load_workbook
 from openpyxl.cell.cell import TYPE_BOOL, get_type
 from openpyxl.utils.exceptions import InvalidFileException
@@ -16,8 +17,17 @@ from .constants import EXCEL_COLUMNS
 from .models import Pessoa
 
 
+class PlanilhaTestView(TemplateView):
+    template_name = "planilha.html"
+
+
 class UploadExcelView(View):
     def post(self, request, *args, **kwargs):
+        """
+        Recebe um arquivo .xlsx e processa as informações para salvar no banco de dados.
+        Não serão criadas pessoas cujo email e data de nascimento sejam inválidos ou já existam no banco de dados.
+        Pessoa com idade inferior a 18 anos não será ativa.
+        """
         file = request.FILES.get("file")
         if not file:
             return HttpResponseBadRequest("Arquivo ausente.")
