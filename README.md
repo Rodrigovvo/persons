@@ -70,6 +70,11 @@ Criar um superusuário:
 ```bash
 sudo docker compose exec web python manage.py createsuperuser
 ```
+Rodar testes:
+
+```bash
+sudo docker compose exec web python manage.py test
+```
 #### Permissões ao arquivos criados utilizando o docker compose
 
 Ao executar comandos utilizando **docker compose** que geram novos arquivos, é necessário alterar as configurações de permissionamento dos arquivos criados utilizando o comando linux **chown**. Na raiz do projeto execute o comando abaixo:
